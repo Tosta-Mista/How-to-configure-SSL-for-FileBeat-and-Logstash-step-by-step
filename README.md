@@ -89,7 +89,8 @@ DNS.4 = DOMAIN_4
 ```bash
 openssl genrsa -out server.key 2048
 openssl req -sha512 -new -key server.key -out server.csr -config server.conf
-echo "C2E9862A0DA8E970" > serial
+# Generate a random number and put that into serial file. 
+hexdump -n 12 -e '4/4 "%08X" 1 "\n"' /dev/random > serial
 openssl x509 -days 3650 -req -sha512 -in server.csr -CAserial serial -CA ca.crt -CAkey ca.key -out server.crt -extensions v3_req -extfile server.conf
 mv server.key server.key.pem && openssl pkcs8 -in server.key.pem -topk8 -nocrypt -out server.key
 ```
